@@ -1,0 +1,23 @@
+; Koliko nula ima u bitovima 3 do 8 registra R0. 
+; Broj nula treba spremiti u memorijsku lokaciju NULE.
+
+        MOV R0, #0b11001010 ; ulazni podatak
+
+        MOV R1, #0 ; R1 = brojač nula
+        MOV R2, #6 ; R2 = brojač za petlju 3 do 8
+        MOV R0, R0, ROR #3 ; "izbaci" bitove 0 do 2
+
+LOOP    MOVS R0, R0, ROR #1 ; MOVS R0, R0, RRX
+        BCS JEDAN
+
+        ADD R1, R1, #1
+
+JEDAN   SUBS R2, R2, #1
+        BNE LOOP
+        
+        STR R1, NULE
+        SWI 123456
+        
+        
+        ORG 0x100
+NULE    DW 0

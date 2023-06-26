@@ -1,0 +1,17 @@
+; Treba ispitati je li broj u registru R0 paran ili neparan. Ako je paran,
+; treba ga upisati u R2, a inače u R2 treba upisati broj 1.
+
+        MOV R0, #0X3F
+        ANDS R2, R0, #1 ; svi bitovi osim zadnjeg su sigurno postavljeni 0
+        BEQ PARAN ; ako je Z (zero) zastavica podignuta, tj zadnji bit nije 1
+
+NEPARAN MOV R2, #1
+
+PARAN   MOV R2, R0
+        B KRAJ
+
+KRAJ    STR R2, 0X500
+        SWI 123456
+
+        ORG 0X500
+        DW 0

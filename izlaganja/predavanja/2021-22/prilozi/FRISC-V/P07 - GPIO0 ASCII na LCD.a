@@ -1,0 +1,40 @@
+; Na vrata B jedinice GPIO0 spojen je LCD.
+; Na LCD-u treba prikazati tekst „ARM”. Za slanje pojedinih
+; znakova treba koristiti potprogram LCDWR.
+; Napisati potprogram LCDWR koji šalje znak na LCD.
+; Parametri potprograma su ASCII-kôd znaka (prenosi se
+; registrom a0) i adresa podatkovnog registra od onih vrata
+; GPIO-a na koja je spojen LCD (prenosi se registrom s0).
+
+        lui s0, %hi(0xFFFF0F00)
+        addi s0, s0, %lo(0xFFFF0F00) ; GPIO 0
+
+prikaz
+        addi a0, x0, 0x0D ; briši LCD
+        jal ra, LCDWR
+
+        addi a0, x0, 0x41 ; "A"
+        jal ra, LCDWR
+
+        addi a0, x0, 0x52 ; "R"
+        jal ra, LCDWR
+
+        addi a0, x0, 0x4D ; "M"
+        jal ra, LCDWR
+
+        addi a0, x0, 0x0A ; ispis na LCD
+        jal ra, LCDWR
+
+        halt
+
+lcdwr
+        andi a0, a0, 0x7F ; postavi bit 7 u nulu
+        sb a0, 4(s0) ; posalji bit
+
+        ori a0, a0, 0x80 ; postavi bit 7 u jedan (podigni impuls)
+        sb a0, 4(s0) ; posalji bit
+        
+        andi a0, a0, 0x7F ; postavi bit 7 u nulu (spusti impuls)
+        sb a0, 4(s0) ; posalji bit
+        
+        jalr x0, 0(ra)

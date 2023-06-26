@@ -1,0 +1,23 @@
+; Za 32-bitni podatak zapisan na adresi 10016 izračunati zrcalni
+; podatak i spremiti ga umjesto originalnog podatka
+
+        lw t1, POD(t0)
+        addi t2, x0, 32 ; brojac bitova
+
+loop    beq t2, x0, kraj ; ako brojac = 0, zavrsi
+
+        slli t4, t4, 1 ; posmakni rezultat ulijevo (spreman novi najnizi bit)
+        andi t3, t1, 1 ; spremi zadnji bit
+        add t4, t4, t3 ; dodaj zadnji bit u rezultat
+        srli t1, t1, 1 ; posmakni podatak udesno (spreman novi najnizi bit)
+        
+        addi t2, t2, -1 ; smanji brojac
+
+        jal x0, loop
+
+kraj    sw t4, POD(t0)
+        halt
+
+
+        org 0x100
+POD     dw 0x1000000F

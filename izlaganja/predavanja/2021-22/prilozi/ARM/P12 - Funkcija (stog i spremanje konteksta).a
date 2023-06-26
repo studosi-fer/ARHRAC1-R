@@ -1,0 +1,23 @@
+        MOV SP, #0x10000 ; MOV R13, #0x10000
+
+        MOV R0, #4
+        MOV R1, #3
+        BL RAZ_KVAD
+        
+        ; tu je R2 i dalje 0
+        STR R0, REZ
+        SWI 0x123456
+
+REZ     DW 0
+
+RAZ_KVAD
+        STMFD SP!, {R2} ; pohrani
+
+        MUL R2, R0, R0
+        MUL R0, R1, R1
+        SUB R0, R2, R0
+
+        LDMFD SP!, {R2} ; obnovi
+
+        MOV PC, LR ; MOV R15, R14
+        

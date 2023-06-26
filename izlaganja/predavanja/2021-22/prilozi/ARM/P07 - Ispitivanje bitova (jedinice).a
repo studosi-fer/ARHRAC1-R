@@ -1,0 +1,19 @@
+; Ispitati jesu li u registru R0 u bitovima od 1 do 4 i bitovima od
+; 12 do 17 te u bitu 30 sve jedinice. Ako jesu, treba obrisati R0,
+; a inače ga ne treba mijenjati.
+
+
+        LDR R0, BROJ
+
+        LDR R1, MASKA
+        ORR R1, R0, R1 ; testiranje bitova 1-4, 12-17 i 30
+        
+        MVN R2, #0
+        EORS R1, R1, R2 ; komplementiranje - ako su svi brojevi jedinice postat ce nula
+        BNE KRAJ
+
+        MOV R0, #0 ; u ispitanim bitovima su sve jedinice
+KRAJ    SWI 123456
+
+MASKA   DW 0b10111111111111000000111111100001
+BROJ    DW 0b01000001110000111111000000011110

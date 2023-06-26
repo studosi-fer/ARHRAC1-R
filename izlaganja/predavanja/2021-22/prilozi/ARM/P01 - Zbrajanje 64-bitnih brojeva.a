@@ -1,0 +1,21 @@
+        MOV R7, #0X1000
+        LDR R0, [R7], #4 ;lower 32 bits
+        LDR R1, [R7], #4 ;higher 32 bits
+        LDR R2, [R7], #4 ;lower 32 bits
+        LDR R3, [R7], #4 ;higher 32 bits
+
+        ADDS R10, R0, R2 ;sum lower 32 bits
+        ADC R11, R1, R3 ;sum higher 32 bits with carry from lower
+        STR R10, [R7], #4 ;store lower 32 bits
+        STR R11, [R7], #4 ;store higher 32 bits
+        SWI 123456
+
+; TESTNI PODACI
+        ORG 0X1000
+        DW 0X0000FFFF
+        DW 0XA
+        DW 0XFFFF0001
+        DW 0XE
+        DW 0 ;sum of lower 32 bits
+        DW 0 ;sum of higher 32 bits
+        

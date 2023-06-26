@@ -1,0 +1,39 @@
+        MOV R13, #0x10000 ; stog
+        LDR R1, GPIO ; dohvat adrese GPIO-a
+
+PETLJA
+        ; dohvat stanja od CTRL
+        ; (port A - 4 najniža bita)
+        LDRB R0, [R1]
+        AND R3, R0, #0b1111
+        
+        ; ako su sve temperature OK,
+        ; onda će R3 biti 0b0000
+        CMP R3, #0
+
+        ; uključi strojeve i zeleni LED
+        MOVEQ R0, #0b01000001
+
+        ; isključi strojeve i
+        ; uključi crveni LED
+        MOVNE R0, #0b10000000
+
+        ; upravljanje procesom
+        ; (port B - bitovi 0, 6 i 7)
+        STRB R0, [R1, #4]
+
+        BL WAIT1SEC
+
+        B PETLJA
+
+GPIO DW 0xFFFF0000 ; bazna adresa GPIO-a
+
+WAIT1SEC ; trajanje u ciklusima
+        STMFD R13!, {R0} ; N+1 = 2
+        LDR R0, KONST ; 3
+LOOP    SUBS R0, R0, #1 ; KONST x 1
+        BNE LOOP ; (KONST-1) x 3 + 1 x 1
+        LDMFD R13!, {R0} ; N+2 = 3
+        MOV PC, LR ; 3
+
+KONST   DW 2500000

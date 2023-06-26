@@ -1,0 +1,11 @@
+        MOV R0, #0X500        
+        LDRB R1, [R0], #1 ; ucitaj podatak
+        ORR R1, R1, #0B1111 ; postavljanje 4 najniza bita u R1 na 1
+        STRB R1, [R0], #1
+
+        SWI 123456
+
+
+        ORG 0X500
+        DB 0B11010
+        DB 0

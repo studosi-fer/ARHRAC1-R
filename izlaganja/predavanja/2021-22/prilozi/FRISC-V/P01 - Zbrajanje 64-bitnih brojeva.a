@@ -1,0 +1,32 @@
+; U memoriji se na lokacijama al, ah, bl i bh nalaze dva 64b
+; broja. Izračunati njihovu sumu i preljev od 64b zbrajanja i
+; rezultat spremiti na lokacije rl,rh i preljev
+        lw a4, al(x0)
+        lw a5, ah(x0)
+        lw a6, bl(x0)
+        lw a7, bh(x0)
+
+        add t0, a4, a6 ; zbroji niže riječi
+        sltu t6, t0, a4 ; izračunaj preljev iz nižeg zbrajanja CL
+        add t1, a5, a7 ; zbroji više riječi
+        sltu t2, t1, a5 ; izračunaj preljev iz višeg zbrajanja CH_1
+        add t4, t1, t6 ; dodaj CL u višu sumu
+        sltu t3, t4, t1 ; izračunaj CH_2
+        add t6, t2, t3 ; kombiniraj CH_1 i CH_2 da se dobije CH
+
+        sw t0, rl(x0)
+        sw t4, rh(x0)
+        sw t6, preljev(x0)
+
+        halt
+
+al      dw 0x80000001
+ah      dw 0xFFFFFFF0
+
+bl      dw 0x80000002
+bh      dw 0xF
+
+rl      dw 0
+rh      dw 0
+
+preljev dw 0

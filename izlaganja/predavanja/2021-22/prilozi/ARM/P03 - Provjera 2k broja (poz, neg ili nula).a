@@ -1,0 +1,31 @@
+        MOV R0, #100
+        MOV R3, #500
+
+PETLJA  LDR R1, [R0], #4
+        CMP R1, #0XFF
+        BEQ KRAJ
+        ORRS R2, R1, R1
+        
+        BEQ SPREMI ; ako je nula
+        BMI NEG ; ako je negativan
+
+POZ     MOV R2, #1
+
+SPREMI  STR R2, [R3], #4
+        B PETLJA
+        
+NEG     MVN R2, #0
+        B SPREMI 
+
+
+KRAJ    SWI 123456
+
+        ORG 100
+        DW 0XC ; pozitivan
+        DW -7 ; negativan
+        DW 0 ; nula
+        DW 0XFF
+        ORG 500
+        DW 0X1111
+        DW 0X1111
+        DW 0X1111

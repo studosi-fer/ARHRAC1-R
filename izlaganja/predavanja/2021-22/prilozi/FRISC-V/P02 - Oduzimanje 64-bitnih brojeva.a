@@ -1,0 +1,33 @@
+        lw a4, al(x0)
+        lw a5, ah(x0)
+        lw a6, bl(x0)
+        lw a7, bh(x0)
+        
+        sub t0, a4, a6 ; oduzmi niže riječi
+        sltu t6, a4, t0 ; izračunaj posudbu iz nižeg oduzimanja Pos_L: t0>a4 =1
+        
+        sub t1, a5, a7 ; oduzmi više riječi
+        sltu t2, a5, t1 ; izračunaj posudbu iz višeg oduzimanja Pos_H1
+        
+        sub t4, t1, t6 ; oduzmi Posl_L
+        sltu t3, t1, t4 ; izračunaj posudbu iz višeg oduzimanja Pos_H2
+        
+        add t6, t2, t3 ; kombiniraj Pos_H1 i Pos_H2 da se dobije Pos
+        
+        sw t0, rl(x0)
+        sw t4, rh(x0)
+        sw t6, posudba(x0)
+        
+        halt
+
+
+al      dw 1
+ah      dw 0x2
+
+bl      dw 1
+bh      dw 0x2
+
+rl      dw 0
+rh      dw 0
+
+posudba dw 0

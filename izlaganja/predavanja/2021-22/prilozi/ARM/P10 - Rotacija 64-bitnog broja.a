@@ -1,0 +1,20 @@
+        MOV R0, #0X500
+        LDR R1, [R0], #4
+        LDR R2, [R0], #4
+        
+        EOR R3, R1, R2
+        AND R3, R3, #1 ; remember only last bit
+
+        ; swap last bits
+        EOR R1, R1, R3
+        EOR R2, R2, R3
+        
+        ; store new number on same adress
+        STR R2, [R0, #-4]!
+        STR R1, [R0, #-4]!
+
+        SWI 123456
+
+        ORG 0X500
+PLOWER  DW 0X3001
+PHIGHER DW 0X0FF0

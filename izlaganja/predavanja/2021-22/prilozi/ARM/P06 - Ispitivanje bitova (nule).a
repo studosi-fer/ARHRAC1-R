@@ -1,0 +1,15 @@
+; Ispitati jesu li u registru R0 u bitovima 0, 1, 30, 31 sve nule.
+; Ako jesu, treba obrisati R0, a inače ga ne treba mijenjati.
+
+        LDR R0, BROJ
+        
+        LDR R1, MASKA
+        ANDS R1, R0, R1 ; ispituje bitove 0, 1, 30 i 31
+        BNE IMA_JED
+
+SVE_NUL MOV R0, #0
+
+IMA_JED SWI 123456
+
+MASKA   DW 0B11000000000000000000000000000011 
+BROJ    DW 0B00000000010111000000000011110001

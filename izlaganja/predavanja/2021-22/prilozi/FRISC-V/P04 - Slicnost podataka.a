@@ -1,0 +1,43 @@
+; Napisati program koji zbraja brojeve zapisane u registrima
+; t0 i t1 i sprema ih u registar t2. Nakon toga treba usporediti
+; t0 i t1 s registrom t2 da bi se odredilo koji od njih je sličniji
+; broju t2. Sličniji broj je onaj koji ima više istih bitova na istim
+; pozicijama i njega treba spremiti u registar t5. Ako imaju
+; jednak broj istih bitova onda treba proizvoljno odabrati
+; jedan od njih.
+
+        addi t0, x0, 0b01011
+        addi t1, x0, 0b01100
+        
+        add t2, t0, t1
+        addi t3, x0, 32 ;brojac
+        xor t4, t0, t2 ;0 -> isti
+        xori t4, t4, -1 ;1 -> isti
+        addi a0, x0, 0 ;brojac podudaranja t0
+
+loop1   beq t3, x0, break1
+        andi t5, t4, 1
+        add a0, a0, t5
+        srli t4, t4, 1
+        addi t3, t3, -1
+        jal x0, loop1
+
+break1  addi t3, x0, 32
+        xor t4, t1, t2
+        xori t4, t4, -1
+        addi a1, x0, 0 ;brojac podudaranja a1
+
+loop2   beq t3, x0, break2
+        andi t5, t4, 1
+        add a1, a1, t5
+        srli t4, t4, 1
+        addi t3, t3, -1
+        jal x0, loop2
+
+break2  blt a0, a1, manji
+        addi t5, t0, 0
+        jal x0, kraj
+
+manji   addi t5, t1, 0
+
+kraj    halt

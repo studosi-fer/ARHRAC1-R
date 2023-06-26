@@ -1,0 +1,33 @@
+;*********************************************************************
+; Program koji niz podataka (terminiran nulom) koji se nalazi u memoriji
+; na adresi 200 ispisuje u obrnutom redoslijedu na istu adresu.
+;*********************************************************************
+
+        MOV R13, #0x400 ; inicijalizacija stoga, SP = R13
+        MOV R1, #0x200 ; učitavanje početne adrese
+        
+        MOV R0, #0 ; brojač duljine niza
+
+PETLJA  LDR R2, [R1], #4 ; ucitaj sljedeci broj u nizu
+        CMP R2, #0 ; ako je nula, niz je gotov
+        BEQ ISPIS
+        
+        STMFD SP!, {R2} ; spremanje na stog
+        ADD R0, R0, #1 ; povećaj brojač
+        B PETLJA ; ucitaj sljedeci broj u nizu
+        
+ISPIS   MOV R1, #0x200 ; učitavanje početne adrese
+
+POM     CMP R0, #0
+        BEQ KRAJ
+        LDMFD SP!, {R2} ; čitanje sa stoga
+        STR R2, [R1], #4
+        SUB R0, R0, #1 ; smanjujemo brojač
+        B POM
+        
+KRAJ    SWI 123456 ; Kraj
+
+        ORG 0x200
+        DW 1,2,3,4,5,0
+        ORG 0x400
+        DW 0,0,0,0,0

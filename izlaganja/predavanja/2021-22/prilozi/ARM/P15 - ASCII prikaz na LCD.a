@@ -1,0 +1,51 @@
+; Na vrata B jedinice GPIO spojen je LCD.
+; Na LCD-u treba prikazati tekst „ARM”. Za slanje pojedinih
+; znakova treba koristiti potprogram LCDWR.
+; Napisati potprogram LCDWR koji šalje znak na LCD.
+; Parametri potprograma su ASCII-kôd znaka (prenosi se
+; registrom R0) i adresa podatkovnog registra od onih vrata
+; GPIO-a na koja je spojen LCD (prenosi se registrom R1).
+
+        MOV SP, #0x10000 ; inicijalizacija stoga
+        
+        MOV R1, #0x100 ; R1 = adresa GPIO-a
+        LDR R1, [R1] ; u R1 se učitava bazna adresa GPIO-a
+        ADD R1, R1, #4 ; u R1 je adresa PB DR (jer ju koristi LCDWR)
+
+PRIKAZ
+        MOV R0, #0x0D ; slanje znaka 0xD aka briši LCD
+        BL LCDWR
+        
+        MOV R0, #0x41 ; slanje znaka ‘A'
+        BL LCDWR
+        
+        MOV R0, #0x52 ; slanje znaka ‘R'
+        BL LCDWR
+        
+        MOV R0, #0x4D ; slanje znaka ‘M'
+        BL LCDWR
+        
+        MOV R0, #0x0A ; slanje znaka 0xA aka ispis znakova na zaslon
+        BL LCDWR
+        
+        SWI 123456
+
+
+LCDWR   STMFD R13!, {R0} ; spremanje konteksta
+
+        AND R0, R0, #0x7F ; postavi bit 7 u nulu (za svaki slučaj, jer
+                ; u R0 je tu mogla biti 1)
+        STRB R0, [R1] ; posalji bit
+        
+        ORR R0, R0, #0x80 ; postavi bit 7 u jedan (podigni impuls)
+        STRB R0, [R1] ; posalji bit
+
+        AND R0, R0, #0x7F ; postavi bit 7 u nulu (spusti impuls)
+        STRB R0, [R1] ; posalji bit
+
+        LDMFD R13!, {R0} ; obnova konteksta
+        MOV PC, LR ; povratak
+
+
+        ORG 0x100       
+        DW 0xFFFF0F00 ; adresa GPIO-a

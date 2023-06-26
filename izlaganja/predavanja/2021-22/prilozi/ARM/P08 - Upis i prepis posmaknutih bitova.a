@@ -1,0 +1,22 @@
+        LDR R0, POD_R0
+        LDR R7, POD_R7
+
+        ; brisanje bitova 2-10
+        LDR R1, MASKA0
+        AND R0, R1, R0
+
+        ; brisanje bitova osim 20-28
+        LDR R1, MASKA7
+        AND R7, R1, R7
+
+        MOV R7, R7, ROR #18 ; poravnanje rotacijom
+
+        ORR R0, R7, R0 ; upis u R0
+        SWI 123456        
+
+
+POD_R0  DW 0b01010101010101010101010101010101
+POD_R7  DW 0b10101010101010101010101010101010
+
+MASKA0  DW 0b11111111111111111111100000000011
+MASKA7  DW 0b00011111111100000000000000000000

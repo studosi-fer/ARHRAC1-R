@@ -1,0 +1,52 @@
+; Napisati program koji čita i uspoređuje podatke iz dva bloka
+; pohranjena na adresama 0x6000 i 0x8000. Veći od dva
+; podatka treba zapisati u odredišni blok na adresi 0x9000.
+; Blokovi sadrže 5 podataka zapisanih u obliku 32-bitnog
+; zapisa 2'k
+
+        lui x1, %hi(IZV_A) ; učitavanje adrese prvog
+        addi x1, x1, %lo(IZV_A) ; izvorišta u x1
+        
+        lui x2, %hi(IZV_B) ; učitavanje adrese drugog
+        addi x2, x2, %lo(IZV_B) ; izvorišta u x2
+        
+        lui x3, %hi(ODR) ; učitavanje adrese
+        addi x3, x3, %lo(ODR) ; odredišta u x3
+        
+        addi x4, x0, 5 ; upisivanje brojaca u x4
+
+petlja  lw x5, 0(x1) ; učitavanje podatka prvog bloka
+        lw x6, 0(x2) ; učitavanje podatka drugog bloka
+        
+        addi x1, x1, 4 ; pomicanje adrese prvog i
+        addi x2, x2, 4 ; drugog bloka
+        
+        blt x5, x6, veci6 ; ako x6>=x5 skoci na veci6
+
+veci5   sw x5, 0(x3)
+        
+        addi x4, x4, -1 ; smanjenje brojača podataka
+        addi x3, x3, 4 ; pomicanje adrese trećeg
+        
+        blt x0, x4, petlja ; ako je brojac veci do 0
+        
+        jal x0, kraj
+
+veci6   sw x6, 0(x3)
+        
+        addi x4, x4, -1 ; smanjenje brojača podataka
+        addi x3, x3, 4 ; pomicanje adrese trećeg
+        
+        blt x0, x4, petlja ; ako je brojac veci do 0
+
+kraj    halt
+
+
+        ORG 0x6000
+IZV_A   DW 0x14, -4, -189, 11, 235667
+
+        ORG 0x8000
+IZV_B   DW 0x15, -4, 0x19, -0x100, -76
+
+        ORG 0x9000
+ODR     DS 20

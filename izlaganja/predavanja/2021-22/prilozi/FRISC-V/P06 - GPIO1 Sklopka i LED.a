@@ -1,0 +1,24 @@
+; GPIO1 je na adresi FFFF 0B00.
+; Na bit 1 vrata A spojena je sklopka, a na bit 5 vrata A spojen je crveni
+; LED (tipka, žuti i zeleni led su također spojeni, ali ih nećemo koristiti).
+; Kad je sklopka uključena, s nje se očitava stanje 1, a inače se očitava stanje 0.
+; Slanjem broja 0 LED se isključuje, a slanjem 1 se uključuje.
+; Napisati program koji treba beskonačno ispitivati je li sklopka
+; uključena i samo za to vrijeme držati LED uključen.
+
+        lui x4, %hi(0xFFFF0B00)
+        addi x4, x4, %lo(0xFFFF0B00) ; dohvati adresu GPIO-a
+        addi x5,x0,0b11100000 ; smjer vrata A: XPA1=0 ULAZ - sklopka
+                ; XPA5=1 IZLAZ - LED
+        sw x5, 8(x4) ; pošalji smjer u PA_DDR
+
+citaj   lw x5, 0(x4) ; pročitaj stanje sklopke (tj. PA_DR)
+        andi x5,x5,2 ; ispitaj bit sklopke (bit 1)
+        bne x5,x0, uklj
+
+        sw x5, 0(x4) ; XPA5 = 0 - isključivanje LED-a
+        jal x0, citaj
+
+uklj    addi x5,x0,0b00100000 ; XPA5 = 1 - uključivanje LED-a
+        sw x5, 0(x4)
+        jal x0,citaj
